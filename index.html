@@ -1,0 +1,1459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VoyageVista — Explore Beyond</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* ----- RESET & BASE ----- */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #f97316;
+            --primary-dark: #ea580c;
+            --secondary: #0f172a;
+            --accent: #8b5cf6;
+            --gold: #f59e0b;
+            --light: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --radius: 24px;
+            --transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b1120;
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        ::selection {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* ----- SCROLLBAR ----- */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b1120;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 20px;
+        }
+
+        /* ----- GLOW ORBS (background) ----- */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+            animation: orbFloat 18s ease-in-out infinite alternate;
+        }
+        .orb--1 {
+            width: 600px;
+            height: 600px;
+            background: var(--primary);
+            top: -10%;
+            right: -10%;
+            animation-delay: 0s;
+        }
+        .orb--2 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent);
+            bottom: -10%;
+            left: -10%;
+            animation-delay: -6s;
+        }
+        .orb--3 {
+            width: 400px;
+            height: 400px;
+            background: var(--gold);
+            top: 40%;
+            left: 40%;
+            animation-delay: -12s;
+            opacity: 0.15;
+        }
+
+        @keyframes orbFloat {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -40px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 30px) scale(0.9);
+            }
+            100% {
+                transform: translate(10px, -10px) scale(1.05);
+            }
+        }
+
+        /* ----- HEADER / NAVIGATION ----- */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 16px 0;
+            transition: var(--transition);
+            backdrop-filter: blur(0px);
+        }
+        .header--scrolled {
+            background: rgba(11, 17, 32, 0.85);
+            backdrop-filter: blur(20px) saturate(1.4);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 10px 0;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+
+        .header .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.7rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            color: #fff;
+        }
+        .logo i {
+            color: var(--primary);
+            font-size: 2rem;
+            filter: drop-shadow(0 0 12px rgba(249, 115, 22, 0.4));
+        }
+        .logo span {
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+        }
+        .nav a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            transition: var(--transition);
+            position: relative;
+        }
+        .nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: var(--transition);
+            border-radius: 4px;
+        }
+        .nav a:hover {
+            color: #fff;
+        }
+        .nav a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            padding: 10px 28px;
+            border-radius: 50px;
+            font-weight: 600;
+            color: #fff !important;
+            box-shadow: 0 4px 24px rgba(249, 115, 22, 0.35);
+            transition: var(--transition);
+        }
+        .nav-cta:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 36px rgba(249, 115, 22, 0.5);
+        }
+        .nav-cta::after {
+            display: none !important;
+        }
+
+        /* Mobile menu toggle */
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 4px;
+            background: none;
+            border: none;
+        }
+        .menu-toggle span {
+            display: block;
+            width: 28px;
+            height: 2.5px;
+            background: #fff;
+            border-radius: 4px;
+            transition: var(--transition);
+            transform-origin: center;
+        }
+        .menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ----- HERO ----- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 140px 0 80px;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 8px 20px 8px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 28px;
+            letter-spacing: 0.3px;
+        }
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulseDot 2s infinite;
+        }
+        @keyframes pulseDot {
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2.8rem, 6vw, 4.8rem);
+            font-weight: 900;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+        }
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.65);
+            max-width: 520px;
+            margin-bottom: 36px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 8px 32px rgba(249, 115, 22, 0.35);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 48px rgba(249, 115, 22, 0.5);
+        }
+        .btn-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 36px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #fff;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 48px;
+            margin-top: 48px;
+            padding-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .hero-stats .stat h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, rgba(255, 255, 255, 0.6));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-stats .stat p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.45);
+            margin-top: 2px;
+        }
+
+        /* Hero visual */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .hero-image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 540px;
+            aspect-ratio: 1/1;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: linear-gradient(145deg, rgba(249, 115, 22, 0.15), rgba(139, 92, 246, 0.10));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+        .hero-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+        }
+
+        .floating-card {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            border-radius: 16px;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.3);
+            animation: floatCard 6s ease-in-out infinite alternate;
+            color: #fff;
+        }
+        .floating-card i {
+            font-size: 1.4rem;
+            color: var(--primary);
+        }
+        .floating-card .info small {
+            display: block;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .floating-card .info strong {
+            font-size: 0.95rem;
+        }
+
+        .floating-card--1 {
+            top: 8%;
+            right: -8%;
+            animation-delay: 0s;
+        }
+        .floating-card--2 {
+            bottom: 12%;
+            left: -10%;
+            animation-delay: -3s;
+        }
+
+        @keyframes floatCard {
+            0% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-16px) rotate(1.5deg);
+            }
+        }
+
+        /* ----- SECTION TITLES ----- */
+        .section {
+            padding: 100px 0;
+            position: relative;
+            z-index: 1;
+        }
+        .section-label {
+            display: inline-block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(2.2rem, 4vw, 3.4rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+        }
+        .section-title span {
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .section-desc {
+            color: rgba(255, 255, 255, 0.55);
+            max-width: 560px;
+            font-size: 1.1rem;
+            margin-top: 16px;
+        }
+
+        .section-head {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 56px;
+            gap: 24px;
+        }
+
+        /* ----- TOUR CARDS ----- */
+        .tour-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+        }
+
+        .tour-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: default;
+            position: relative;
+            group: true;
+        }
+        .tour-card:hover {
+            transform: translateY(-12px);
+            border-color: rgba(249, 115, 22, 0.25);
+            box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+        }
+
+        .tour-card-image {
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+        .tour-card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+        .tour-card:hover .tour-card-image img {
+            transform: scale(1.06);
+        }
+        .tour-card-image .tag {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .tour-card-image .price {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .tour-card-image .price small {
+            font-weight: 400;
+            font-size: 0.75rem;
+            opacity: 0.6;
+        }
+
+        .tour-card-body {
+            padding: 24px 26px 28px;
+        }
+        .tour-card-body h3 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .tour-card-body .meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 14px;
+        }
+        .tour-card-body .meta i {
+            margin-right: 6px;
+            color: var(--primary);
+        }
+        .tour-card-body p {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+        .tour-card-body .btn-outline {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+            border-bottom: 2px solid rgba(249, 115, 22, 0.2);
+            padding-bottom: 4px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        .tour-card-body .btn-outline:hover {
+            color: #fff;
+            border-color: var(--primary);
+            gap: 14px;
+        }
+
+        /* ----- DESTINATIONS / FEATURES ----- */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 32px;
+        }
+        .feature-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 32px 28px;
+            text-align: center;
+            transition: var(--transition);
+        }
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(249, 115, 22, 0.2);
+            transform: translateY(-6px);
+        }
+        .feature-item .icon {
+            font-size: 2.6rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+        .feature-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .feature-item p {
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.95rem;
+        }
+
+        /* ----- TESTIMONIALS ----- */
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius);
+            padding: 32px 30px;
+            transition: var(--transition);
+        }
+        .testimonial-card:hover {
+            border-color: rgba(249, 115, 22, 0.15);
+            transform: translateY(-4px);
+        }
+        .testimonial-card .stars {
+            color: var(--gold);
+            font-size: 1rem;
+            letter-spacing: 2px;
+            margin-bottom: 14px;
+        }
+        .testimonial-card blockquote {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .testimonial-card .author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .testimonial-card .author .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #fff;
+        }
+        .testimonial-card .author .name {
+            font-weight: 600;
+        }
+        .testimonial-card .author .role {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.35);
+        }
+
+        /* ----- CTA / BOOKING ----- */
+        .cta-section {
+            background: linear-gradient(145deg, rgba(249, 115, 22, 0.08), rgba(139, 92, 246, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: var(--radius);
+            padding: 72px 60px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 40px;
+            backdrop-filter: blur(8px);
+        }
+        .cta-section h2 {
+            font-size: clamp(1.8rem, 3vw, 2.8rem);
+            font-weight: 800;
+            line-height: 1.2;
+        }
+        .cta-section h2 span {
+            background: linear-gradient(135deg, var(--primary), var(--gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .cta-section p {
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 8px;
+            font-size: 1.05rem;
+            max-width: 440px;
+        }
+        .cta-actions {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        /* ----- FOOTER ----- */
+        .footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            margin-bottom: 48px;
+        }
+        .footer-brand p {
+            color: rgba(255, 255, 255, 0.4);
+            max-width: 300px;
+            margin-top: 14px;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .footer-brand .socials {
+            display: flex;
+            gap: 16px;
+            margin-top: 20px;
+        }
+        .footer-brand .socials a {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .footer-brand .socials a:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+            transform: translateY(-3px);
+        }
+
+        .footer-col h5 {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 18px;
+            color: #fff;
+        }
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+        .footer-col ul a {
+            color: rgba(255, 255, 255, 0.4);
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        .footer-col ul a:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.25);
+        }
+
+        /* ----- RESPONSIVE ----- */
+        @media (max-width: 1024px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .hero p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-actions {
+                justify-content: center;
+            }
+            .hero-stats {
+                justify-content: center;
+            }
+            .hero-image-wrapper {
+                max-width: 440px;
+                margin: 0 auto;
+            }
+            .floating-card--1 {
+                right: 0%;
+                top: 4%;
+            }
+            .floating-card--2 {
+                left: 0%;
+                bottom: 6%;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .cta-section {
+                padding: 48px 32px;
+                flex-direction: column;
+                text-align: center;
+            }
+            .cta-section p {
+                max-width: 100%;
+            }
+            .cta-actions {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: rgba(11, 17, 32, 0.96);
+                backdrop-filter: blur(24px);
+                flex-direction: column;
+                padding: 80px 32px 40px;
+                gap: 24px;
+                transition: var(--transition);
+                border-left: 1px solid rgba(255, 255, 255, 0.06);
+            }
+            .nav.open {
+                right: 0;
+            }
+            .menu-toggle {
+                display: flex;
+                z-index: 1001;
+            }
+            .nav a {
+                font-size: 1.1rem;
+            }
+            .nav-cta {
+                margin-top: 8px;
+            }
+
+            .hero {
+                padding: 120px 0 60px;
+                min-height: auto;
+            }
+            .hero h1 {
+                font-size: 2.6rem;
+            }
+            .hero-stats {
+                gap: 28px;
+                flex-wrap: wrap;
+            }
+            .hero-stats .stat h3 {
+                font-size: 1.6rem;
+            }
+
+            .section {
+                padding: 60px 0;
+            }
+            .section-head {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .tour-grid {
+                grid-template-columns: 1fr;
+            }
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .floating-card {
+                display: none;
+            }
+            .cta-section {
+                padding: 32px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .btn-primary,
+            .btn-secondary {
+                padding: 14px 28px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Orbs -->
+    <div class="orb orb--1"></div>
+    <div class="orb orb--2"></div>
+    <div class="orb orb--3"></div>
+
+    <!-- ===== HEADER ===== -->
+    <header class="header" id="header">
+        <div class="container">
+            <a href="#" class="logo">
+                <i class="fas fa-compass"></i>
+                <span>VoyageVista</span>
+            </a>
+
+            <nav class="nav" id="nav">
+                <a href="#tours">Tours</a>
+                <a href="#features">Features</a>
+                <a href="#testimonials">Testimonials</a>
+                <a href="#contact" class="nav-cta">Book Now</a>
+            </nav>
+
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-grid">
+                <!-- Left -->
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span class="dot"></span>
+                        Travel with confidence
+                    </div>
+                    <h1>
+                        Discover the <br />
+                        <span class="highlight">World's Beauty</span>
+                    </h1>
+                    <p>
+                        Curated adventures, breathtaking destinations, and
+                        unforgettable experiences — all crafted just for you.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#tours" class="btn-primary">
+                            Explore Tours <i class="fas fa-arrow-right"></i>
+                        </a>
+                        <a href="#contact" class="btn-secondary">
+                            <i class="fas fa-play-circle"></i> Watch Story
+                        </a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <h3>12K+</h3>
+                            <p>Happy Travelers</p>
+                        </div>
+                        <div class="stat">
+                            <h3>84</h3>
+                            <p>Destinations</p>
+                        </div>
+                        <div class="stat">
+                            <h3>4.9★</h3>
+                            <p>Average Rating</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right -->
+                <div class="hero-visual">
+                    <div class="hero-image-wrapper">
+                        <!-- Using a gradient placeholder + inline SVG for demo – replace with real image -->
+                        <svg viewBox="0 0 600 600" style="width:100%;height:100%;background:linear-gradient(145deg,#1e293b,#0f172a);">
+                            <defs>
+                                <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#f97316" stop-opacity="0.3"/>
+                                    <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.1"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="600" height="600" fill="url(#g1)"/>
+                            <!-- abstract shapes -->
+                            <circle cx="200" cy="200" r="120" fill="rgba(249,115,22,0.12)"/>
+                            <circle cx="420" cy="360" r="160" fill="rgba(139,92,246,0.08)"/>
+                            <circle cx="100" cy="450" r="80" fill="rgba(245,158,11,0.10)"/>
+                            <path d="M0 450 Q150 350 300 450 T600 400 L600 600 L0 600 Z" fill="rgba(249,115,22,0.05)"/>
+                            <path d="M0 500 Q200 420 400 500 T600 460 L600 600 L0 600 Z" fill="rgba(255,255,255,0.02)"/>
+                            <!-- mountain-like silhouettes -->
+                            <path d="M0 520 L80 440 L160 490 L260 380 L360 470 L460 410 L560 460 L600 480 L600 600 L0 600 Z" fill="rgba(255,255,255,0.03)"/>
+                            <text x="300" y="340" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="rgba(255,255,255,0.08)" letter-spacing="6">VOYAGE</text>
+                            <text x="300" y="380" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="400" fill="rgba(255,255,255,0.05)" letter-spacing="4">EXPLORE • DREAM • DISCOVER</text>
+                            <!-- tiny icons -->
+                            <text x="180" y="240" font-size="40" fill="rgba(249,115,22,0.15)">🏔️</text>
+                            <text x="400" y="200" font-size="36" fill="rgba(245,158,11,0.12)">🌊</text>
+                            <text x="440" y="440" font-size="32" fill="rgba(139,92,246,0.12)">🌴</text>
+                        </svg>
+                    </div>
+
+                    <!-- Floating cards -->
+                    <div class="floating-card floating-card--1">
+                        <i class="fas fa-location-dot"></i>
+                        <div class="info">
+                            <small>Top destination</small>
+                            <strong>Bali, Indonesia</strong>
+                        </div>
+                    </div>
+                    <div class="floating-card floating-card--2">
+                        <i class="fas fa-star"></i>
+                        <div class="info">
+                            <small>Rated 4.9</small>
+                            <strong>Exclusive Tours</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TOURS ===== -->
+    <section class="section" id="tours">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <span class="section-label">✦ Featured Tours</span>
+                    <h2 class="section-title">
+                        Curated <span>Experiences</span>
+                    </h2>
+                    <p class="section-desc">
+                        Handpicked journeys that blend culture, nature, and
+                        luxury for the modern explorer.
+                    </p>
+                </div>
+                <a href="#" class="btn-secondary" style="padding:12px 28px;">
+                    View All <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="tour-grid">
+                <!-- Card 1 -->
+                <div class="tour-card">
+                    <div class="tour-card-image">
+                        <svg viewBox="0 0 600 400" style="width:100%;height:100%;background:linear-gradient(145deg,#1a2a3a,#0f1a2a);">
+                            <circle cx="300" cy="200" r="120" fill="rgba(249,115,22,0.08)"/>
+                            <circle cx="450" cy="120" r="80" fill="rgba(139,92,246,0.06)"/>
+                            <text x="300" y="220" text-anchor="middle" font-size="48" opacity="0.15">🏝️</text>
+                            <text x="300" y="280" text-anchor="middle" font-family="Inter" font-size="14" fill="rgba(255,255,255,0.06)">MALDIVES</text>
+                        </svg>
+                        <span class="tag">🌿 Nature</span>
+                        <span class="price">$1,290 <small>/ person</small></span>
+                    </div>
+                    <div class="tour-card-body">
+                        <h3>Island Escape • Maldives</h3>
+                        <div class="meta">
+                            <span><i class="fas fa-clock"></i> 7 Days</span>
+                            <span><i class="fas fa-users"></i> Up to 6</span>
+                            <span><i class="fas fa-map-pin"></i> Maldives</span>
+                        </div>
+                        <p>Overwater bungalows, crystal-clear lagoons, and sunset cruises — a tropical dream.</p>
+                        <a href="#" class="btn-outline">Book Now <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="tour-card">
+                    <div class="tour-card-image">
+                        <svg viewBox="0 0 600 400" style="width:100%;height:100%;background:linear-gradient(145deg,#1e293b,#0f172a);">
+                            <circle cx="200" cy="150" r="90" fill="rgba(245,158,11,0.08)"/>
+                            <circle cx="400" cy="280" r="100" fill="rgba(249,115,22,0.06)"/>
+                            <text x="300" y="200" text-anchor="middle" font-size="48" opacity="0.15">🏔️</text>
+                            <text x="300" y="260" text-anchor="middle" font-family="Inter" font-size="14" fill="rgba(255,255,255,0.06)">ALPS</text>
+                        </svg>
+                        <span class="tag">❄️ Adventure</span>
+                        <span class="price">$1,890 <small>/ person</small></span>
+                    </div>
+                    <div class="tour-card-body">
+                        <h3>Alpine Trek • Switzerland</h3>
+                        <div class="meta">
+                            <span><i class="fas fa-clock"></i> 10 Days</span>
+                            <span><i class="fas fa-users"></i> Up to 8</span>
+                            <span><i class="fas fa-map-pin"></i> Swiss Alps</span>
+                        </div>
+                        <p>Hike through majestic peaks, stay in mountain lodges, and experience pristine alpine beauty.</p>
+                        <a href="#" class="btn-outline">Book Now <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="tour-card">
+                    <div class="tour-card-image">
+                        <svg viewBox="0 0 600 400" style="width:100%;height:100%;background:linear-gradient(145deg,#1a1a2e,#0f0f1f);">
+                            <circle cx="300" cy="180" r="130" fill="rgba(139,92,246,0.08)"/>
+                            <circle cx="450" cy="300" r="70" fill="rgba(249,115,22,0.05)"/>
+                            <text x="300" y="200" text-anchor="middle" font-size="48" opacity="0.15">🏯</text>
+                            <text x="300" y="260" text-anchor="middle" font-family="Inter" font-size="14" fill="rgba(255,255,255,0.06)">JAPAN</text>
+                        </svg>
+                        <span class="tag">🌸 Culture</span>
+                        <span class="price">$2,290 <small>/ person</small></span>
+                    </div>
+                    <div class="tour-card-body">
+                        <h3>Cultural Odyssey • Japan</h3>
+                        <div class="meta">
+                            <span><i class="fas fa-clock"></i> 12 Days</span>
+                            <span><i class="fas fa-users"></i> Up to 10</span>
+                            <span><i class="fas fa-map-pin"></i> Tokyo → Kyoto</span>
+                        </div>
+                        <p>From neon-lit Tokyo to ancient temples, sake tastings, and cherry blossom gardens.</p>
+                        <a href="#" class="btn-outline">Book Now <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section class="section" id="features" style="padding-top:0;">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <span class="section-label">✦ Why VoyageVista</span>
+                    <h2 class="section-title">
+                        Travel <span>Your Way</span>
+                    </h2>
+                    <p class="section-desc">
+                        We blend local expertise with global standards to deliver
+                        journeys that inspire.
+                    </p>
+                </div>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-item">
+                    <div class="icon"><i class="fas fa-globe"></i></div>
+                    <h4>Global Destinations</h4>
+                    <p>Over 80 countries with carefully vetted local partners.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon"><i class="fas fa-shield-alt"></i></div>
+                    <h4>Safe &amp; Secure</h4>
+                    <p>24/7 support, travel insurance, and risk-assessed routes.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon"><i class="fas fa-leaf"></i></div>
+                    <h4>Eco-Conscious</h4>
+                    <p>Carbon-offset tours and partnerships with sustainable hotels.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="icon"><i class="fas fa-user-tie"></i></div>
+                    <h4>Local Experts</h4>
+                    <p>Guides who live and breathe the culture of each destination.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIALS ===== -->
+    <section class="section" id="testimonials" style="padding-top:0;">
+        <div class="container">
+            <div class="section-head">
+                <div>
+                    <span class="section-label">✦ Testimonials</span>
+                    <h2 class="section-title">
+                        Voices of <span>Adventure</span>
+                    </h2>
+                    <p class="section-desc">
+                        Real stories from travelers who ventured with us.
+                    </p>
+                </div>
+            </div>
+
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <blockquote>
+                        “VoyageVista turned our dream honeymoon into reality.
+                        Every detail was impeccable — from the transfer to the
+                        sunset dinner on the beach.”
+                    </blockquote>
+                    <div class="author">
+                        <div class="avatar">JD</div>
+                        <div>
+                            <div class="name">Jessica &amp; David</div>
+                            <div class="role">Maldives, 2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <blockquote>
+                        “The Alpine trek was life-changing. Our guide knew every
+                        hidden trail and local story. I've never felt so connected
+                        to nature.”
+                    </blockquote>
+                    <div class="author">
+                        <div class="avatar">MK</div>
+                        <div>
+                            <div class="name">Michael K.</div>
+                            <div class="role">Switzerland, 2025</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card">
+                    <div class="stars">★★★★★</div>
+                    <blockquote>
+                        “Japan exceeded all expectations. The cultural immersion,
+                        the food, the temples — VoyageVista crafted a perfect
+                        balance of planned and free time.”
+                    </blockquote>
+                    <div class="author">
+                        <div class="avatar">SR</div>
+                        <div>
+                            <div class="name">Sarah R.</div>
+                            <div class="role">Japan, 2024</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA / CONTACT ===== -->
+    <section class="section" id="contact" style="padding-top:0;">
+        <div class="container">
+            <div class="cta-section">
+                <div>
+                    <h2>
+                        Ready to <span>Explore</span> the <br />World with Us?
+                    </h2>
+                    <p>
+                        Let's craft your next unforgettable journey. Get in touch
+                        and start planning today.
+                    </p>
+                </div>
+                <div class="cta-actions">
+                    <a href="#" class="btn-primary">
+                        <i class="fas fa-calendar-check"></i> Plan Your Trip
+                    </a>
+                    <a href="#" class="btn-secondary">
+                        <i class="fas fa-headset"></i> Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <i class="fas fa-compass"></i>
+                        <span>VoyageVista</span>
+                    </a>
+                    <p>
+                        Crafting extraordinary journeys for the modern explorer.
+                        Your adventure starts here.
+                    </p>
+                    <div class="socials">
+                        <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Company</h5>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Press</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Support</h5>
+                    <ul>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Safety</a></li>
+                        <li><a href="#">Cancellation</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h5>Destinations</h5>
+                    <ul>
+                        <li><a href="#">Europe</a></li>
+                        <li><a href="#">Asia</a></li>
+                        <li><a href="#">Americas</a></li>
+                        <li><a href="#">Oceania</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <span>&copy; 2026 VoyageVista. All rights reserved.</span>
+                <span>
+                    <a href="#" style="color:rgba(255,255,255,0.3);margin-right:20px;">Privacy</a>
+                    <a href="#" style="color:rgba(255,255,255,0.3);">Terms</a>
+                </span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== JAVASCRIPT ===== -->
+    <script>
+        // ---- Mobile menu toggle ----
+        const menuToggle = document.getElementById('menuToggle');
+        const nav = document.getElementById('nav');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            nav.classList.toggle('open');
+        });
+
+        // Close menu on link click (mobile)
+        document.querySelectorAll('.nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                nav.classList.remove('open');
+            });
+        });
+
+        // ---- Header scroll effect ----
+        const header = document.getElementById('header');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+            if (currentScroll > 50) {
+                header.classList.add('header--scrolled');
+            } else {
+                header.classList.remove('header--scrolled');
+            }
+            lastScroll = currentScroll;
+        });
+
+        // ---- Smooth reveal animation (Intersection Observer) ----
+        const revealElements = document.querySelectorAll(
+            '.tour-card, .feature-item, .testimonial-card, .cta-section'
+        );
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -40px 0px'
+        });
+
+        revealElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(36px)';
+            el.style.transition = 'opacity 0.7s cubic-bezier(0.23,1,0.32,1), transform 0.7s cubic-bezier(0.23,1,0.32,1)';
+            observer.observe(el);
+        });
+
+        // ---- Floating cards subtle parallax on mouse move (desktop) ----
+        const heroVisual = document.querySelector('.hero-visual');
+        if (heroVisual && window.innerWidth > 768) {
+            heroVisual.addEventListener('mousemove', (e) => {
+                const rect = heroVisual.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width - 0.5;
+                const y = (e.clientY - rect.top) / rect.height - 0.5;
+                const cards = heroVisual.querySelectorAll('.floating-card');
+                cards.forEach((card, i) => {
+                    const speed = 12 + i * 6;
+                    const moveX = x * speed;
+                    const moveY = y * speed;
+                    card.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+            });
+            heroVisual.addEventListener('mouseleave', () => {
+                const cards = heroVisual.querySelectorAll('.floating-card');
+                cards.forEach(card => {
+                    card.style.transform = 'translate(0, 0)';
+                });
+            });
+        }
+
+        // ---- Console greeting ----
+        console.log('%c✈️ VoyageVista', 'font-size:24px;font-weight:700;color:#f97316;');
+        console.log('%cExplore beyond. 🌍', 'font-size:14px;color:#8b5cf6;');
+    </script>
+
+</body>
+</html>
